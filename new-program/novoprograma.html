@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>SoldaTech | Modelo Real 3D</title>
+    <link rel="stylesheet" href="./novoprograma.css" />
+    <link rel="stylesheet" href="../shared-responsive.css" />
+  </head>
+
+  <body data-page="novo-programa">
+    <div class="painel">
+      <button id="btnVoltar">←</button>
+
+      <h2>SOLDATECH</h2>
+
+      <section id="controleZ" class="controle-z" aria-label="Controle manual de altura Z">
+        <button
+          id="btnSubirIndutor"
+          class="controle-z__botao"
+          type="button"
+          aria-label="Subir indutor"
+        >
+          <span class="controle-z__seta" aria-hidden="true">&#8593;</span>
+          <span>SUBIR</span>
+        </button>
+
+        <div class="controle-z__posicao" aria-live="polite">
+          <span id="valorAltura">Z: 0.0 mm</span>
+          <small id="statusControleZ"></small>
+        </div>
+
+        <button
+          id="btnDescerIndutor"
+          class="controle-z__botao"
+          type="button"
+          aria-label="Descer indutor"
+        >
+          <span>DESCER</span>
+          <span class="controle-z__seta" aria-hidden="true">&#8595;</span>
+        </button>
+      </section>
+<button
+  id="btnIniciarCiclo"
+  type="button"
+  style="display: none;"
+>
+  INICIAR CICLO
+</button>
+      <button id="btnPlayPause" onclick="alternarMovimento()" disabled>
+        Pausar execução
+      </button>
+
+      <!-- =================================
+PAINEL DE MOTIVO DA PAUSA
+================================= -->
+
+<div
+  id="modalMotivoPausa"
+  class="modal-motivo-pausa"
+  style="display: none;"
+>
+
+  <div class="painel-motivo-pausa">
+
+    <h3>Motivo da pausa</h3>
+
+    <p>
+      A produção já está pausada. Selecione o motivo da pausa:
+    </p>
+
+    <div class="lista-motivos-pausa">
+
+      <button
+        type="button"
+        class="btn-motivo-pausa"
+        data-motivo="Banheiro"
+      >
+        🚻 Banheiro
+      </button>
+
+      <button
+        type="button"
+        class="btn-motivo-pausa"
+        data-motivo="Almoço / Intervalo"
+      >
+        🍽️ Almoço / Intervalo
+      </button>
+
+      <button
+        type="button"
+        class="btn-motivo-pausa"
+        data-motivo="Manutenção"
+      >
+        🔧 Manutenção
+      </button>
+
+      <button
+        type="button"
+        class="btn-motivo-pausa"
+        data-motivo="Ajuste / Troca de peça"
+      >
+        ⚙️ Ajuste / Troca de peça
+      </button>
+
+      <button
+        type="button"
+        class="btn-motivo-pausa"
+        data-motivo="Sem motivo"
+      >
+        ⚠️ Sem motivo
+      </button>
+      <button
+  type="button"
+  class="btn-motivo-pausa"
+  data-motivo="Reunião da empresa"
+>
+  Reunião da empresa
+</button>
+
+    </div>
+
+    <button
+      type="button"
+      id="btnCancelarMotivoPausa"
+    >
+      Manter como Sem motivo
+    </button>
+
+  </div>
+
+</div>
+
+<!-- =================================
+MODO DE REPRODUÇÃO (SEQUENCIAL/SINGULAR)
+================================= -->
+
+<div
+  id="modalModoReproducao"
+  class="modal-motivo-pausa"
+  style="display: none;"
+>
+  <div class="painel-motivo-pausa">
+    <h3>Como reproduzir?</h3>
+
+    <p>
+      Deseja iniciar em modo sequencial ou singular?
+    </p>
+
+    <div class="lista-motivos-pausa">
+      <button
+        type="button"
+        id="btnModoSequencial"
+        class="btn-motivo-pausa"
+      >
+        🔁 Sequencial — ao chegar no último ponto, volta pro primeiro
+      </button>
+
+      <button
+        type="button"
+        id="btnModoSingular"
+        class="btn-motivo-pausa"
+      >
+        ⏹ Singular — ao chegar no último ponto, para e aguarda novo play
+      </button>
+    </div>
+
+    <button
+      type="button"
+      id="btnCancelarModoReproducao"
+    >
+      Cancelar
+    </button>
+  </div>
+</div>
+
+<div
+  id="painelContagemInicio"
+  style="
+    display: none;
+    margin-top: 10px;
+    padding: 14px;
+    border-radius: 8px;
+    background: rgba(56, 189, 248, 0.10);
+    border: 1px solid #38bdf8;
+    text-align: center;
+  "
+>
+  <p
+    id="contadorInicio"
+    style="
+      margin: 0;
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+    "
+  >
+  </p>
+</div>
+      <div
+  id="painelTrocaPeca"
+  style="
+    display: none;
+    margin-top: 10px;
+    padding: 12px;
+    border: 1px solid #facc15;
+    border-radius: 8px;
+    background: rgba(250, 204, 21, 0.08);
+  "
+>
+  <p
+    id="mensagemTrocaPeca"
+    style="
+      margin: 0 0 8px 0;
+      color: #facc15;
+      font-size: 13px;
+    "
+  >
+    Troque a peça e confirme quando estiver posicionada.
+  </p>
+
+  <p
+    id="contadorTrocaPeca"
+    style="
+      margin: 6px 0;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+    "
+  ></p>
+
+  <button
+    id="btnPecaPosicionada"
+    type="button"
+  >
+    PEÇA POSICIONADA
+  </button>
+</div>
+
+      <button onclick="girarMesa()">GIRAR MESA</button>
+      <button onclick="salvarPonto()">SALVAR PONTO</button>
+
+      <button onclick="salvarPrograma()">SALVAR PROGRAMA</button>
+
+      <button id="btnIniciarReproducao" type="button">
+        ▶ INICIAR REPRODUÇÃO
+      </button>
+
+      <p
+        id="statusPrograma"
+        style="margin-top: 10px; font-size: 13px; color: #4ade80"
+      ></p>
+      <p
+        id="programaAtualExecucao"
+        style="margin-top: 10px; font-size: 13px; color: #38bdf8"
+      >
+        Programa: -
+      </p>
+
+      <p id="execucaoAtual" style="font-size: 13px; color: #facc15">
+        Execução: -
+      </p>
+      <p id="tempoRestante" style="font-size: 13px; color: #f87171">
+        Tempo restante: --
+      </p>
+
+      <div
+        style="
+          width: 100%;
+          height: 20px;
+          background: #1e293b;
+          border-radius: 10px;
+          overflow: hidden;
+          margin-top: 10px;
+        "
+      >
+        <div
+          id="barraProgresso"
+          style="width: 0%; height: 100%; background: #22c55e; transition: 0.3s"
+        ></div>
+      </div>
+
+      <p
+        id="textoProgresso"
+        style="font-size: 13px; margin-top: 5px; color: white"
+      >
+        0%
+      </p>
+
+      <div
+        id="listaPontos"
+        style="
+          margin-top: 15px;
+          max-height: 200px;
+          overflow: auto;
+          font-size: 13px;
+          color: #cbd5e1;
+        "
+      ></div>
+
+      <div class="status">
+        <p>
+          Status Máquina:
+          <span id="statusMaquinaReal" class="status-maquina-sem-confirmacao">
+            SEM CONFIRMAÇÃO
+          </span>
+        </p>
+
+        <p>
+          Mesa:
+          <span id="statusMesa"> PARADA </span>
+        </p>
+      </div>
+    </div>
+
+
+
+
+    <aside id="painelConexao" class="painel-conexao" aria-label="Estado de conexão da máquina">
+      <h3>CLP</h3>
+
+      <div class="painel-conexao__linha">
+        <span>MQTT</span>
+        <strong id="statusMqtt" class="conexao-status conexao-status--offline">
+          <i aria-hidden="true"></i> OFFLINE
+        </strong>
+      </div>
+
+      <div class="painel-conexao__linha">
+        <span>CLP</span>
+        <strong id="statusClp" class="conexao-status conexao-status--indisponivel">
+          INDISPONÍVEL
+        </strong>
+      </div>
+
+      <p id="ultimoContatoClp" class="painel-conexao__contato">
+        Última resposta: --
+      </p>
+
+      <p id="leituraEncoderZ" class="painel-conexao__contato">
+        Encoder Z: --
+      </p>
+
+      <div class="painel-conexao__botoes">
+        <button id="btnMarcarTopoEncoder" type="button">Marcar topo</button>
+        <button id="btnMarcarBaseEncoder" type="button">Marcar base</button>
+      </div>
+
+      <label class="painel-conexao__toggle" for="chkMaquinaReal">
+        <input type="checkbox" id="chkMaquinaReal" />
+        Controlar a máquina real (CLP)
+      </label>
+    </aside>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
+
+    <script type="module" src="./firebase-programas.js"></script>
+  
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<script src="mqtt-maquina.js"></script>
+
+    <script defer src="./novoprograma.js"></script>
+  </body>
+</html>
